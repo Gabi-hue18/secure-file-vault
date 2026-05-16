@@ -1,1 +1,5 @@
-
+flask
+boto3
+cryptography
+gunicorn
+python-dotenv

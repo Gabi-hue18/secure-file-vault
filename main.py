@@ -128,12 +128,22 @@ def dashboard():
 
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
-    cur.execute("SELECT id, original_name FROM files WHERE user_email = ?", (session["user"],))
+
+    cur.execute(
+        "SELECT id, original_name, file_size, upload_time FROM files WHERE user_email = ?",
+        (session["user"],)
+    )
+
     files = cur.fetchall()
+    total_files = len(files)
+
     conn.close()
 
-    return render_template("dashboard.html", files=files)
-
+    return render_template(
+        "dashboard.html",
+        files=files,
+        total_files=total_files
+    )
 @app.route("/upload", methods=["POST"])
 def upload():
     if "user" not in session:

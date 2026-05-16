@@ -134,7 +134,7 @@ def upload():
         return "No file selected."
     
     if not allowed_file(file.filename):
-    return "Invalid file type."
+        return "Invalid file type."
 
     original_data = file.read()
 

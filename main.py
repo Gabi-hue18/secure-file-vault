@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, session, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from cryptography.fernet import Fernet
@@ -52,7 +53,17 @@ def init_db():
             user_email TEXT,
             original_name TEXT,
             s3_key TEXT,
-            encryption_key TEXT
+            encryption_key TEXT,
+            file_size TEXT,
+            upload_time TEXT
+        )
+    """)
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_email TEXT,
+        action TEXT,
+        timestamp TEXT
         )
     """)
 
@@ -137,6 +148,14 @@ def upload():
         return "Invalid file type."
 
     original_data = file.read()
+    file_size_kb = round(len(original_data) / 1024, 2)
+
+    if file_size_kb > 1024:
+        file_size = f"{round(file_size_kb / 1024, 2)} MB"
+    else:
+        file_size = f"{file_size_kb} KB"
+
+    upload_time = datetime.now().strftime("%d %b %Y %I:%M %p")
 
     key = Fernet.generate_key()
     cipher = Fernet(key)
@@ -153,8 +172,25 @@ def upload():
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO files (user_email, original_name, s3_key, encryption_key) VALUES (?, ?, ?, ?)",
-        (session["user"], file.filename, s3_key, key.decode())
+    """
+    INSERT INTO files (
+        user_email,
+        original_name,
+        s3_key,
+        encryption_key,
+        file_size,
+        upload_time
+    )
+    VALUES (?, ?, ?, ?, ?, ?)
+    """,
+        (
+        session["user"],
+        file.filename,
+        s3_key,
+        key.decode(),
+        file_size,
+        upload_time
+        )
     )
     conn.commit()
     conn.close()

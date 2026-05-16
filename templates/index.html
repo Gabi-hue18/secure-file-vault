@@ -5,11 +5,40 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Secure File Vault</h1>
-        <p>Cloud-based secure file storage using encryption and AWS S3.</p>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-    </div>
+    <nav class="navbar">
+        <div class="logo">🔐 Secure File Vault</div>
+        <div>
+            <a href="/login" class="nav-btn">Login</a>
+            <a href="/register" class="nav-btn primary">Register</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <span class="badge">Secure • Encrypted • AWS Powered</span>
+            <h1>Secure Your Files<br><span>In The Cloud</span></h1>
+            <p>
+                Upload, encrypt, store, and download your files safely using
+                AES encryption and AWS S3 cloud storage.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="/register" class="btn primary">Get Started</a>
+                <a href="/login" class="btn secondary">Login</a>
+            </div>
+
+            <div class="features">
+                <div>🛡 AES Encryption</div>
+                <div>☁ AWS S3 Storage</div>
+                <div>🔒 Private Access</div>
+            </div>
+        </div>
+
+        <div class="hero-card">
+            <div class="vault-icon">🔐</div>
+            <h3>Cloud Vault</h3>
+            <p>Your files remain encrypted before reaching cloud storage.</p>
+        </div>
+    </section>
 </body>
 </html>

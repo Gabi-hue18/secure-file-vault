@@ -12,6 +12,16 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 DB_NAME = "vault.db"
 UPLOAD_FOLDER = "temp"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+ALLOWED_EXTENSIONS = {
+    "txt",
+    "pdf",
+    "png",
+    "jpg",
+    "jpeg",
+    "docx"
+}
+
+app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 AWS_REGION = os.environ.get("AWS_REGION")
 S3_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
@@ -50,6 +60,9 @@ def init_db():
     conn.close()
 
 init_db()
+def allowed_file(filename):
+    return "." in filename and \
+           filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route("/")
 def home():
@@ -119,6 +132,9 @@ def upload():
 
     if file.filename == "":
         return "No file selected."
+    
+    if not allowed_file(file.filename):
+    return "Invalid file type."
 
     original_data = file.read()
 
@@ -217,5 +233,9 @@ def logout():
     session.clear()
     return redirect("/")
 
+@app.errorhandler(413)
+def too_large(e):
+    return "File is too large. Maximum allowed size is 10 MB."
+    
 if __name__ == "__main__":
     app.run(debug=True)

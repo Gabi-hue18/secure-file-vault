@@ -175,7 +175,43 @@ def download(file_id):
         as_attachment=True,
         download_name=original_name
     )
+@app.route("/delete/<int:file_id>")
+def delete_file(file_id):
+    if "user" not in session:
+        return redirect("/login")
 
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT s3_key FROM files WHERE id = ? AND user_email = ?",
+        (file_id, session["user"])
+    )
+    file_record = cur.fetchone()
+
+    if not file_record:
+        conn.close()
+        return "File not found."
+
+    s3_key = file_record[0]
+
+    # Delete file from AWS S3
+    s3.delete_object(
+        Bucket=S3_BUCKET_NAME,
+        Key=s3_key
+    )
+
+    # Delete file record from database
+    cur.execute(
+        "DELETE FROM files WHERE id = ? AND user_email = ?",
+        (file_id, session["user"])
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/dashboard")
+    
 @app.route("/logout")
 def logout():
     session.clear()

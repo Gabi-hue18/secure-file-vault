@@ -75,9 +75,9 @@ def allowed_file(filename):
     return "." in filename and \
            filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
     try:
-    cur.execute("ALTER TABLE files ADD COLUMN file_size TEXT")
-except sqlite3.OperationalError:
-    pass
+        cur.execute("ALTER TABLE files ADD COLUMN file_size TEXT")
+    except sqlite3.OperationalError:
+        pass
 
 try:
     cur.execute("ALTER TABLE files ADD COLUMN upload_time TEXT")

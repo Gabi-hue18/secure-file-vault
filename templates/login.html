@@ -1,1 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Secure File Vault</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
 
+        <form method="POST" action="/login">
+            <input type="email" name="email" placeholder="Enter email" required><br><br>
+            <input type="password" name="password" placeholder="Enter password" required><br><br>
+            <button type="submit">Login</button>
+        </form>
+
+        <p>New user?</p>
+        <a href="/register">Create account</a>
+    </div>
+</body>
+</html>
